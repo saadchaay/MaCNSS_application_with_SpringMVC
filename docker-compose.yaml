@@ -1,0 +1,20 @@
+version: "3.0"
+services:
+  app:
+    image: tomcat
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./target/macnss-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/ROOT.war
+    depends_on:
+      - database
+  database:
+    image: postgres
+    ports:
+      - "5000:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: macnss
+    volumes:
+      - ./localData:/var/lib/postgresql/data
