@@ -6,15 +6,21 @@ services:
       - "8080:8080"
     volumes:
       - ./target/macnss-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/ROOT.war
+      - ./medications.json:/env/medications.json
     depends_on:
-      - database
-  database:
+      - postgresqldb
+  postgresqldb:
     image: postgres
     ports:
-      - "5000:5432"
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: macnss
     volumes:
       - ./localData:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8083:8080"
