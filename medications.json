@@ -1,14 +1,26 @@
 [
   {
     "medication": {
-        "number": "53742894201",
+        "number": "531123882",
         "price": "356.13"
     }
   },
   {
     "medication": {
-      "number": "5312394201",
+      "number": "748393020",
       "price": "206.53"
+    }
+  },
+  {
+    "medication": {
+      "number": "890383883",
+      "price": "56.13"
+    }
+  },
+  {
+    "medication": {
+      "number": "53219782",
+      "price": "26.53"
     }
   }
 ]

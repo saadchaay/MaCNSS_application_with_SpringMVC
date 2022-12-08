@@ -21,6 +21,9 @@ public class Person {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Transient
+    private String role;
+
     public long getId() {
         return id;
     }
@@ -51,5 +54,13 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

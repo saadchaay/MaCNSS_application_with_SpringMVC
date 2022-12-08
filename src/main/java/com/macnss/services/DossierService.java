@@ -19,8 +19,8 @@ public class DossierService  {
         this.dossierRepository = dossierRepository;
     }
 
-    public void save(Dossier dossier){
-        dossierRepository.save(dossier);
+    public Dossier save(Dossier dossier){
+        return dossierRepository.save(dossier);
     }
 
     public List<Dossier> listAll() {

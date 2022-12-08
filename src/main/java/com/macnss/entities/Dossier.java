@@ -2,6 +2,7 @@ package com.macnss.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,7 +33,7 @@ public class Dossier {
     private double amount;
 
     @ManyToOne
-    @JoinColumn(name = "patient_number", insertable = false, updatable = false)
+    @JoinColumn(name = "patient_number", referencedColumnName = "patient_number", insertable = false, updatable = false)
     private Patient patient;
 
     public long getId() {

@@ -7,6 +7,6 @@
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="h-full">
-        this is agent home page
+        this is admin home page
     </body>
 </html>
