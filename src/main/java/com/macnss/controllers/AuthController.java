@@ -35,7 +35,7 @@ public class AuthController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginForm(Map<String, Object> model, @ModelAttribute("error") String error, @ModelAttribute("authPerson") Authenticated authPerson){
         if(authPerson != null){
-            return "redirect:/"+authPerson.getRole().toLowerCase()+"/";
+            return "redirect:/"+authPerson.getRole().toLowerCase();
         }else{
             model.put("person", new Person());
             model.put("error", error);
@@ -60,7 +60,7 @@ public class AuthController {
                     auth.setRole(Enum.role.ADMIN.toString());
                     model.addAttribute("authPerson", auth);
                     System.out.println(model.getAttribute("authPerson"));
-                    return new ModelAndView("redirect:/admin/");
+                    return new ModelAndView("redirect:/admin");
                 }else{
                     return new ModelAndView("redirect:/login", (Map<String, ?>) model);
                 }
@@ -71,7 +71,7 @@ public class AuthController {
                     auth.setLoggedInUser(agent);
                     auth.setRole(Enum.role.AGENT.toString());
                     model.addAttribute("authPerson", auth);
-                    return new ModelAndView("redirect:/agent/");
+                    return new ModelAndView("redirect:/agent");
                 }else{
                     return new ModelAndView("redirect:/login", (Map<String, ?>) model);
                 }
@@ -82,7 +82,7 @@ public class AuthController {
                     auth.setLoggedInUser(patient);
                     auth.setRole(Enum.role.PATIENT.toString());
                     model.addAttribute("authPerson", auth);
-                    return new ModelAndView("redirect:/patient/");
+                    return new ModelAndView("redirect:/patient");
                 }else{
                     return new ModelAndView("redirect:/login", (Map<String, ?>) model);
                 }

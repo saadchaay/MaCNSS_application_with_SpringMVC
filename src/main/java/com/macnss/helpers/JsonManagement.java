@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class JsonManagement {
 
     public static Double readFile(String codeMed){
-        AtomicReference<String> price = new AtomicReference<>("");
+        AtomicReference<String> price = new AtomicReference<>("0.0");
         JSONParser jsParser = new JSONParser();
         try(FileReader reader = new FileReader("/env/medications.json")){
             Object obj = jsParser.parse(reader);

@@ -34,4 +34,8 @@ public class DossierService  {
     public void delete(Long id) {
         dossierRepository.deleteById(id);
     }
+
+    public void updateDossierStatus(String status, Long id){
+        dossierRepository.updateStatus(status, id);
+    }
 }

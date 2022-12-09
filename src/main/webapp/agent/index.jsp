@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html class="h-full bg-white">
@@ -102,34 +103,33 @@
                 </header>
             </div>
 
-            <main class="-mt-32">
+            <main class="-mt-32" x-data="{displayForm: false}">
                 <div class="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
-                    <!-- Replace with your content -->
                     <div class="flex justify-end">
-                        <button class="mb-4 bg-cyan-700 text-white border border-cyan-800 block rounded-md py-2 px-3 text-base font-medium" >
+                        <button x-on:click="displayForm = true" class="mb-4 bg-cyan-700 text-white border border-cyan-800 block rounded-md py-2 px-3 text-base font-medium" >
                             Add new dossier
                         </button>
                     </div>
 
                     <div class="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
 
-                        <div class="overflow-hidden overflow-x-auto rounded-lg border border-gray-200">
+                        <div class="overflow-hidden overflow-x-auto rounded-lg border border-gray-200" x-show="!displayForm">
                             <table class="min-w-full divide-y divide-gray-200 text-sm">
                                 <thead class="bg-gray-100">
                                 <tr>
                                     <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                                         <div class="flex items-center gap-2">
-                                            ID
+                                            Dossier number
                                         </div>
                                     </th>
                                     <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900" >
                                         <div class="flex items-center gap-2">
-                                            Name
+                                            Patient Number
                                         </div>
                                     </th>
                                     <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900" >
                                         <div class="flex items-center gap-2">
-                                            Email
+                                            Applied date
                                         </div>
                                     </th>
                                     <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900" >
@@ -140,39 +140,64 @@
                                     <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900" >
                                         Status
                                     </th>
+                                    <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900" >
+                                        <div class="flex items-center gap-2">
+                                            Action
+                                        </div>
+                                    </th>
                                 </tr>
                                 </thead>
 
                                 <tbody class="divide-y divide-gray-200">
+                                <c:forEach var="dos" items="${dossiers}" >
                                     <tr>
                                         <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                            #00001
+                                            ${dos.number}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            John Frusciante
+                                            ${dos.patientNumber}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            <strong class="rounded bg-amber-100 px-3 py-1.5 text-xs font-medium text-amber-700" >
-                                            Partially Refunded
-                                            </strong>
+                                            <fmt:formatDate value="${dos.appliedDate}" pattern="yyyy-MM-dd" />
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-2 text-gray-700 ">
+                                            <fmt:formatNumber type="number" maxFractionDigits="2" value="${dos.amount}"/> DH
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                                            <strong class="rounded bg-green-100 px-3 py-1.5 text-xs font-medium text-green-700" >
-                                                Paid
-                                            </strong>
+                                            <c:if test="${ dos.status == 'PENDING'}" >
+                                                <strong class="rounded bg-amber-100 px-3 py-1.5 text-xs font-medium text-amber-700" >
+                                                    Pending
+                                                </strong>
+                                            </c:if>
+                                            <c:if test="${ dos.status == 'REJECTED'}" >
+                                                <strong class="rounded bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700">
+                                                    Rejected
+                                                </strong>
+                                            </c:if>
+                                            <c:if test="${ dos.status == 'ACCEPTED'}" >
+                                                <strong class="rounded bg-green-100 px-3 py-1.5 text-xs font-medium text-green-700" >
+                                                    Accepted
+                                                </strong>
+                                            </c:if>
                                         </td>
-                                        <td class="whitespace-nowrap px-4 py-2">
-                                            <strong class="rounded bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700">
-                                                Cancelled
-                                            </strong>
+                                        <td class="whitespace-nowrap px-4 py-2 text-gray-700 flex">
+                                            <c:if test="${dos.status == 'PENDING'}" >
+                                                <a href="/agent/reject/${dos.id}">
+                                                    <svg class="w-7 h-7 text-red-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                                                </a>
+                                                <a href="/agent/accept/${dos.id}">
+                                                    <svg class="w-7 h-7 text-green-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                                </a>
+                                            </c:if>
                                         </td>
                                     </tr>
+                                </c:forEach>
                                 </tbody>
                             </table>
                         </div>
 
                         <%-- form add dossier --%>
-                        <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12" x-data="{step: 1}">
+                        <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12" x-data="{step: 1}" x-show="displayForm">
 
                             <ul class="flex border-b border-gray-100">
                                 <li class="flex-1">
@@ -218,20 +243,20 @@
                                 </li>
                             </ul>
 
-                            <form action="/agent/add" class="space-y-4" method="post">
+                            <form action="/agent/add" class="space-y-4" method="post" x-data="{patientNumber: '', consulType: '', countMeds: 1, countDocs: 1}">
 
                                 <%-- step 1 --%>
                                 <div class="mt-5 flex flex-col items-center" x-show=" step == 1">
                                     <div class="my-2 w-1/2">
                                         <label class="sr-only" for="patient">Patient Number</label>
-                                        <input required name="patient" type="number" placeholder="Patient Number" id="patient" class="w-full rounded-lg border border-gray-600 p-3 text-sm"  />
+                                        <input x-model="patientNumber" required name="patient" type="number" placeholder="Patient Number" id="patient" class="w-full rounded-lg border border-gray-600 p-3 text-sm"  />
                                     </div>
 
                                     <div class="w-1/2">
-                                        <fieldset class="flex flex-wrap gap-3 justify-between">
+                                        <fieldset class="flex flex-wrap gap-3 justify-between" x-init="$watch('consulType', value => console.log(value))">
                                             <h1 class="text-lg font-bold">Consultation</h1>
                                             <div>
-                                                <input type="radio" name="consultation" value="120" id="generalist" class="peer hidden" checked />
+                                                <input x-model="consulType" type="radio" name="consultation" value="120" id="generalist" class="peer hidden" />
                                                 <label
                                                         for="generalist"
                                                         class="flex cursor-pointer items-center justify-center rounded-md border border-gray-600 py-2 px-3 text-gray-900 hover:border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-checked:text-white"
@@ -240,7 +265,7 @@
                                                 </label>
                                             </div>
                                             <div>
-                                                <input type="radio" name="consultation" value="160" id="specialist" class="peer hidden" />
+                                                <input x-model="consulType" type="radio" name="consultation" value="160" id="specialist" class="peer hidden" checked />
                                                 <label
                                                         for="specialist"
                                                         class="flex cursor-pointer items-center justify-center rounded-md border border-gray-600 py-2 px-3 text-gray-900 hover:border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-500 peer-checked:text-white"
@@ -254,72 +279,77 @@
                                 </div>
 
                                 <%-- step 2 --%>
-                                <div class="mt-5 flex flex-col items-center" x-show=" step == 2" x-data="{count: 1}">
+                                <div class="mt-5 flex flex-col items-center" x-show=" step == 2">
                                     <div class="my-2 w-1/2">
-<%--                                        <label class="">Medicament</label>--%>
-                                        <template x-for="i in count">
+                                        <template x-for="i in countMeds">
                                             <input :name="'medic'+i" type="number" :placeholder="'Medicament Number '+i" class="my-1 w-full rounded-lg border border-gray-600 p-3 text-sm"  />
                                         </template>
                                     </div>
                                     <div class="w-1/2 flex justify-end">
-                                        <button type="button" x-on:click="count++" >
+                                        <button type="button" x-on:click="countMeds++" >
                                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path></svg>
                                         </button>
                                     </div>
-                                    <input type="text" :value="count" name="medic_number" hidden>
+                                    <input type="text" :value="countMeds" name="medic_number" hidden>
                                 </div>
 
-                                <%--<div class="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
-                                    <div>
-                                        <input class="sr-only" id="option1" type="radio" tabindex="-1" />
-                                        <label
-                                                for="option1"
-                                                class="block w-full rounded-lg border border-gray-600 p-3"
-                                                tabindex="0"
-                                        >
-                                            <span class="text-sm font-medium"> Option 1 </span>
-                                        </label>
+                                <%-- step 3 --%>
+                                <div class="mt-5 flex flex-col items-center" x-show=" step == 3" >
+                                    <div class="my-2 w-1/2">
+                                        <template x-for="i in countDocs">
+                                            <div>
+                                                <span class="" x-text="'Document number '+i+': '" ></span>
+                                                <div class="flex justify-evenly items-center">
+                                                    <select class="mr-1 my-1 w-full rounded-lg border border-gray-600 p-3 text-sm" :name="'docType'+i">
+                                                        <option value="RADIO">Radio document</option>
+                                                        <option value="SCANNER">Scanner document</option>
+                                                        <option value="ANALYSE">Analyse document</option>
+                                                    </select>
+                                                    <input :name="'docPrice'+i" type="text" :placeholder="'Document price Number '+i" class="ml-1 my-1 w-full rounded-lg border border-gray-600 p-3 text-sm"  />
+                                                </div>
+                                            </div>
+                                        </template>
                                     </div>
-
-                                    <div>
-                                        <input class="sr-only" id="option2" type="radio" tabindex="-1" />
-                                        <label
-                                                for="option2"
-                                                class="block w-full rounded-lg border border-gray-600 p-3"
-                                                tabindex="0"
-                                        >
-                                            <span class="text-sm font-medium"> Option 2 </span>
-                                        </label>
+                                    <div class="w-1/2 flex justify-end">
+                                        <button type="button" x-on:click="countDocs++" >
+                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path></svg>
+                                        </button>
                                     </div>
-
-                                    <div>
-                                        <input class="sr-only" id="option3" type="radio" tabindex="-1" />
-                                        <label
-                                                for="option3"
-                                                class="block w-full rounded-lg border border-gray-600 p-3"
-                                                tabindex="0"
-                                        >
-                                            <span class="text-sm font-medium"> Option 3 </span>
-                                        </label>
-                                    </div>
+                                    <input type="text" :value="countDocs" name="docs_number" hidden>
                                 </div>
 
-                                <div>
-                                    <label class="sr-only" for="message">Message</label>
-                                    <textarea
-                                            class="w-full rounded-lg border border-gray-600 p-3 text-sm"
-                                            placeholder="Message"
-                                            rows="8"
-                                            id="message"
-                                    ></textarea>
-                                </div>--%>
+                                <%-- step 4 --%>
+                                <article class="rounded-xl border-2 border-gray-100 bg-white" x-show=" step == 4">
+                                    <div class="flex justify-center p-6">
+                                        <div class="ml-4 flex flex-col">
+                                            <h3 class="font-medium sm:text-lg">
+                                                <a href="#" class="hover:underline">
+                                                    Patient Number <span x-text="patientNumber" ></span>
+                                                </a>
+                                            </h3>
 
-                                <div class="mt-4 flex justify-between">
+                                            <p class="text-md text-gray-700 line-clamp-2">
+                                                Consultation Type : <span x-text="consulType == 120 ? 'Generalist' : 'Specialist'" class="font-bold"></span>
+                                            </p>
+
+                                            <p class="text-md text-gray-700 line-clamp-2">
+                                                Number of Medication : <span x-text="countMeds" class="font-bold"></span>
+                                            </p>
+
+                                            <p class="text-md text-gray-700 line-clamp-2">
+                                                Number of Documents : <span x-text="countDocs" class="font-bold"></span>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <div :class=" step == 1 ? 'mt-4 flex justify-end' : 'mt-4 flex justify-between'">
                                     <button x-show="step != 1" type="button" x-on:click="step--" class="inline-flex w-full items-center justify-center rounded-lg bg-gray-400 px-5 py-3 text-white sm:w-auto">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
                                         <span class="font-medium"> Previous </span>
                                     </button>
-                                    <div>
+                                    <div class="flex justify-end">
                                         <button x-show="step != 4" type="button" x-on:click="step++" class="mr-2 inline-flex w-full items-center justify-center rounded-lg bg-black px-5 py-3 text-white sm:w-auto">
                                             <span class="font-medium"> Next </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -332,6 +362,7 @@
                                         </button>
                                     </div>
                                 </div>
+
                             </form>
                         </div>
                     </div>
